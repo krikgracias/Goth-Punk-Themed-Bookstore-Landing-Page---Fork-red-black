@@ -5,12 +5,13 @@ export const NavBar = () => {
   return <nav className="bg-black border-b border-red-600 px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <Skull className="h-8 w-8 text-red-500 mr-2 rotate-45" />
+          <Skull className="h-8 w-8 text-white-500 mr-2" />
           <span className="text-xl font-bold tracking-widest text-white" style={{
           textShadow: '0 0 5px #ff0000'
         }}>
-            GUTTERPUNK<span className="text-red-500">BOOKS&CO</span>
+            GUTTERPUNK<span className="text-red-500">BOOKS&CO  </span>
           </span>
+          <BookOpenIcon className="h-8 w-8 text-red-500 mr-2" />
         </div>
         <div className="hidden md:flex items-center space-x-8">
           <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">

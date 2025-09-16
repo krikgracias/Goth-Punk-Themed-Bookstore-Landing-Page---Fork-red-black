@@ -3,7 +3,7 @@ export const Categories = () => {
   const categories = [{
     id: 1,
     name: 'Emo Poetry',
-    image: 'https://images.unsplash.com/photo-1510115391658-af3dda9c2dc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+    image: 'https://c4.wallpaperflare.com/wallpaper/467/178/350/emo-pictures-wallpaper-preview.jpg',
     count: 76
   }, {
     id: 2,

@@ -6,7 +6,7 @@ export const FeaturedBooks = () => {
     title: 'American Idiot',
     author: 'Green Day Biography',
     price: '$18.99',
-    coverImage: 'https://images.unsplash.com/photo-1552245080-ac31e2a54f7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    coverImage: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Green_Day_-_American_Idiot_album_cover.png',
     isNew: true
   }, {
     id: 2,
@@ -26,7 +26,7 @@ export const FeaturedBooks = () => {
     title: 'Our Band Could Be Your Life',
     author: 'Michael Azerrad',
     price: '$21.99',
-    coverImage: 'https://images.unsplash.com/photo-1461784180009-27c1303a64b6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
+    coverImage: 'https://media.brooklynvegan.com/xxrzsfjkyw/uploads/2019/05/23/ourbandcouldbeyourlifeaudiobook.jpg'
   }];
   return <section className="py-16 px-4 bg-black relative">
       {/* Grungy texture overlay */}
