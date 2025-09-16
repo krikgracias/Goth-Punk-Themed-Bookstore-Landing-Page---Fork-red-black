@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScissorsIcon } from 'lucide-react';
+import { ScissorsIcon, Skull, HandMetal } from 'lucide-react';
 export const Hero = () => {
   return <section className="relative bg-gradient-to-b from-black to-gray-900 py-20 px-4">
       <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
@@ -17,7 +17,7 @@ export const Hero = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <div className="mb-6 flex justify-center">
-            <ScissorsIcon className="h-12 w-12 text-red-500 transform rotate-45" />
+            <HandMetal className="h-12 w-12 text-red-500 transform rotate-45" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white leading-tight uppercase tracking-widest" style={{
           textShadow: '0 0 8px #ff0000'

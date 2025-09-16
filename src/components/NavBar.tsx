@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { BookOpenIcon, MenuIcon, XIcon, ShoppingCartIcon, SearchIcon, ScissorsIcon } from 'lucide-react';
+import { BookOpenIcon, MenuIcon, XIcon, ShoppingCartIcon, SearchIcon, ScissorsIcon, Skull } from 'lucide-react';
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return <nav className="bg-black border-b border-red-600 px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <ScissorsIcon className="h-8 w-8 text-red-500 mr-2 rotate-45" />
+          <Skull className="h-8 w-8 text-red-500 mr-2 rotate-45" />
           <span className="text-xl font-bold tracking-widest text-white" style={{
           textShadow: '0 0 5px #ff0000'
         }}>
