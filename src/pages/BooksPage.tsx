@@ -134,12 +134,13 @@ export const BooksPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {books.map(book => (
               <BookCard
-                key={book.id}
-                title={book.title}
-                author={book.author}
-                price={`$${book.price.toFixed(2)}`}
-                coverImage={book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'}
-              />
+  key={book.id}
+  id={book.id}
+  title={book.title}
+  author={book.author}
+  price={`$${book.price.toFixed(2)}`}
+  coverImage={book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'}
+/>
             ))}
           </div>
         )}
