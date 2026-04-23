@@ -4,7 +4,7 @@ export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return <nav className="bg-black border-b border-red-600 px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="flex items-center">
+        <a className="flex items-center">
           <Skull className="h-8 w-8 text-white-500 mr-2" />
           <span className="text-xl font-bold tracking-widest text-white" style={{
           textShadow: '0 0 5px #ff0000'
@@ -12,9 +12,9 @@ export const NavBar = () => {
             GUTTERPUNK<span className="text-red-500">BOOKS&CO  </span>
           </span>
           <BookOpenIcon className="h-8 w-8 text-red-500 mr-2" />
-        </div>
+        </a>
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
+          <a href="/" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
             Home
           </a>
           <a href="/books" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
@@ -48,7 +48,7 @@ export const NavBar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && <div className="md:hidden bg-gray-900 border-t border-red-900 mt-2">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <a href="#" className="block px-3 py-2 text-white font-medium uppercase tracking-wide text-sm hover:bg-red-900 rounded">
+            <a href="/" className="block px-3 py-2 text-white font-medium uppercase tracking-wide text-sm hover:bg-red-900 rounded">
               Home
             </a>
             <a href="#" className="block px-3 py-2 text-white font-medium uppercase tracking-wide text-sm hover:bg-red-900 rounded">
