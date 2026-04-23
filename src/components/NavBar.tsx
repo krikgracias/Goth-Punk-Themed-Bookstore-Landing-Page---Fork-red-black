@@ -17,7 +17,7 @@ export const NavBar = () => {
           <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
             Home
           </a>
-          <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
+          <a href="/books" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">
             Books
           </a>
           <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">

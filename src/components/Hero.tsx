@@ -40,9 +40,9 @@ export const Hero = () => {
             <span className="text-red-400">revolution</span>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-red-700 hover:bg-red-600 text-white px-8 py-3 uppercase tracking-widest font-bold text-sm transition-colors border border-red-500 transform -rotate-1">
-              BROWSE THE CHAOS
-            </button>
+<a href="/books" className="bg-red-700 hover:bg-red-600 text-white px-8 py-3 uppercase tracking-widest font-bold text-sm transition-colors border border-red-500 transform -rotate-1 inline-block">
+  BROWSE THE CHAOS
+</a>
             <button className="bg-transparent hover:bg-gray-800 text-white px-8 py-3 uppercase tracking-widest font-bold text-sm transition-colors border border-dashed border-red-600 transform rotate-1">
               JOIN OUR SCENE
             </button>

@@ -40,7 +40,7 @@ export const FeaturedBooks = () => {
             <span className="border-b-2 border-red-500 pb-1">STAFF</span>{' '}
             <span className="inline-block transform -rotate-2">PICKS</span>
           </h2>
-          <a href="#" className="text-red-400 hover:text-red-300 uppercase text-sm tracking-wider font-bold border-b border-dashed border-red-800">
+          <a href="/books" className="text-red-400 hover:text-red-300 uppercase text-sm tracking-wider font-bold border-b border-dashed border-red-800">
             SEE ALL
           </a>
         </div>
