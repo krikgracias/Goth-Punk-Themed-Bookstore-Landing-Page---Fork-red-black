@@ -1,35 +1,38 @@
-import React from 'react';
-import { BookCard } from './BookCard';
+import React, { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { BookCard } from './BookCard'
+
+interface Book {
+  id: string
+  title: string
+  author: string
+  price: number
+  cover_url: string | null
+  condition: string
+  format: string
+}
+
 export const FeaturedBooks = () => {
-  const featuredBooks = [{
-    id: 1,
-    title: 'American Idiot',
-    author: 'Green Day Biography',
-    price: '$18.99',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/en/e/ed/Green_Day_-_American_Idiot_album_cover.png',
-    isNew: true
-  }, {
-    id: 2,
-    title: 'Please Kill Me',
-    author: 'Legs McNeil & Gillian McCain',
-    price: '$24.99',
-    coverImage: 'https://images.unsplash.com/photo-1595769816263-9b910be24d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1079&q=80'
-  }, {
-    id: 3,
-    title: 'Diary of an Oxygen Thief',
-    author: 'Anonymous',
-    price: '$16.99',
-    coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-    isNew: true
-  }, {
-    id: 4,
-    title: 'Our Band Could Be Your Life',
-    author: 'Michael Azerrad',
-    price: '$21.99',
-    coverImage: 'https://media.brooklynvegan.com/xxrzsfjkyw/uploads/2019/05/23/ourbandcouldbeyourlifeaudiobook.jpg'
-  }];
-  return <section className="py-16 px-4 bg-black relative">
-      {/* Grungy texture overlay */}
+  const [books, setBooks] = useState<Book[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('id, title, author, price, cover_url, condition, format')
+        .eq('featured', true)
+        .eq('available', true)
+        .limit(4)
+
+      if (!error && data) setBooks(data)
+      setLoading(false)
+    }
+    fetchBooks()
+  }, [])
+
+  return (
+    <section className="py-16 px-4 bg-black relative">
       <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png')] bg-repeat"></div>
       <div className="max-w-7xl mx-auto relative">
         <div className="flex justify-between items-center mb-8">
@@ -41,9 +44,28 @@ export const FeaturedBooks = () => {
             SEE ALL
           </a>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredBooks.map(book => <BookCard key={book.id} title={book.title} author={book.author} price={book.price} coverImage={book.coverImage} isNew={book.isNew} />)}
-        </div>
+        {loading ? (
+          <div className="text-gray-500 uppercase tracking-widest text-sm text-center py-12">
+            Loading...
+          </div>
+        ) : books.length === 0 ? (
+          <div className="text-gray-600 uppercase tracking-widest text-sm text-center py-12">
+            No featured books yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {books.map(book => (
+              <BookCard
+                key={book.id}
+                title={book.title}
+                author={book.author}
+                price={`$${book.price.toFixed(2)}`}
+                coverImage={book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'}
+              />
+            ))}
+          </div>
+        )}
       </div>
-    </section>;
-};
+    </section>
+  )
+}
