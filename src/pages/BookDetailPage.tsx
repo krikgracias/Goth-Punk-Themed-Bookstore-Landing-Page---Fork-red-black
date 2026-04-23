@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { NavBar } from '../components/NavBar'
 import { Footer } from '../components/Footer'
 import { ArrowLeftIcon } from 'lucide-react'
+import { useCart } from '../context/CartContext'
 
 interface Book {
   id: string
@@ -22,6 +23,20 @@ export const BookDetailPage = () => {
   const { id } = useParams()
   const [book, setBook] = useState<Book | null>(null)
   const [loading, setLoading] = useState(true)
+  const { addItem, items } = useCart()
+
+  const inCart = book ? items.some(i => i.id === book.id) : false
+
+  const handleAddToCart = () => {
+    if (!book) return
+    addItem({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      price: book.price,
+      coverImage: book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'
+    })
+  }
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -119,14 +134,15 @@ export const BookDetailPage = () => {
                 ISBN: {book.isbn}
               </p>
             )}
-            <a
-              href={`mailto:kirk.r.garcia@gmail.com?subject=Inquiry: ${encodeURIComponent(book.title)}&body=Hi, I'm interested in purchasing ${encodeURIComponent(book.title)} by ${encodeURIComponent(book.author)} listed at $${book.price.toFixed(2)}.`}
-              className="block w-full bg-red-700 hover:bg-red-600 text-white py-4 uppercase tracking-widest font-bold text-sm transition-colors border border-red-500 text-center"
+            <button
+              onClick={handleAddToCart}
+              disabled={inCart}
+              className="block w-full bg-red-700 hover:bg-red-600 text-white py-4 uppercase tracking-widest font-bold text-sm transition-colors border border-red-500 text-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Inquire to Purchase
-            </a>
+              {inCart ? 'Added to Cart' : 'Add to Cart'}
+            </button>
             <p className="text-gray-600 text-xs text-center mt-3 uppercase tracking-wide">
-              Online checkout coming soon — email us to reserve this copy
+              Payment coming soon — reserve your copy today
             </p>
           </div>
         </div>
