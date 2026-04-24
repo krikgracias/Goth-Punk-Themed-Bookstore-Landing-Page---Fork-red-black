@@ -86,6 +86,41 @@ const fetchCover = async (isbn: string) => {
     }
   }
 
+const fixAllCovers = async () => {
+  setMessage('Fixing covers...')
+  setStatus('loading')
+
+  const { data: books } = await supabase
+    .from('books')
+    .select('id, title, author')
+
+  if (!books) return
+
+  for (const book of books) {
+    try {
+      const query = encodeURIComponent(`${book.title} ${book.author}`)
+      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`)
+      const data = await res.json()
+      const info = data.items?.[0]?.volumeInfo
+      if (!info) continue
+
+      const isbn = info.industryIdentifiers?.find((i: any) => i.type === 'ISBN_13')?.identifier
+        || info.industryIdentifiers?.find((i: any) => i.type === 'ISBN_10')?.identifier
+
+      const cover = isbn
+        ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+        : info.imageLinks?.thumbnail?.replace('http://', 'https://')
+
+      if (!cover) continue
+
+      await supabase.from('books').update({ cover_url: cover, isbn: isbn || null }).eq('id', book.id)
+    } catch { }
+  }
+
+  setMessage('All covers updated.')
+  setStatus('success')
+}
+
   const field = 'w-full bg-gray-900 border border-red-900 text-white py-2 px-3 text-sm focus:outline-none focus:border-red-500 rounded-none'
   const label = 'block text-gray-500 text-xs uppercase tracking-wider mb-1'
 
@@ -219,6 +254,12 @@ const fetchCover = async (isbn: string) => {
           >
             {status === 'loading' ? 'Adding...' : 'Add Book'}
           </button>
+          <button
+  onClick={fixAllCovers}
+  className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 uppercase tracking-widest font-bold text-sm border border-gray-600 transition-colors"
+>
+  Fix All Covers from Google Books
+</button>
         </div>
       </main>
     </div>
