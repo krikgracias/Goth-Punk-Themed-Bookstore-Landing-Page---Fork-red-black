@@ -5,8 +5,8 @@ import { Footer } from '../components/Footer'
 import { TrashIcon } from 'lucide-react'
 
 export const CartPage = () => {
-  const { items, removeItem, clearCart, total } = useCart()
   const [checked, setChecked] = useState(false)
+  const { items, removeItem, clearCart, updateQuantity, total } = useCart()
 
   const handleCheckout = () => {
     clearCart()
@@ -68,28 +68,45 @@ export const CartPage = () => {
         ) : (
           <>
             <div className="space-y-4 mb-8">
-              {items.map(item => (
-                <div key={item.id} className="flex gap-4 bg-gray-900 border border-red-900 p-4 items-center">
-                  <img
-                    src={item.coverImage}
-                    alt={item.title}
-                    className="w-16 h-20 object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-bold uppercase tracking-wide text-sm line-clamp-1">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-400 text-xs mb-1">{item.author}</p>
-                    <p className="text-red-400 font-bold">${item.price.toFixed(2)}</p>
-                  </div>
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className="text-gray-600 hover:text-red-500 transition-colors flex-shrink-0"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              ))}
+             {items.map(item => (
+  <div key={item.id} className="flex gap-4 bg-gray-900 border border-red-900 p-4 items-center">
+    <img
+      src={item.coverImage}
+      alt={item.title}
+      className="w-16 h-20 object-cover flex-shrink-0"
+    />
+    <div className="flex-1 min-w-0">
+      <h3 className="text-white font-bold uppercase tracking-wide text-sm line-clamp-1">
+        {item.title}
+      </h3>
+      <p className="text-gray-400 text-xs mb-2">{item.author}</p>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+          className="w-6 h-6 bg-gray-800 border border-red-900 text-white text-sm flex items-center justify-center hover:bg-red-900"
+        >
+          −
+        </button>
+        <span className="text-white text-sm w-4 text-center">{item.quantity}</span>
+        <button
+          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+          className="w-6 h-6 bg-gray-800 border border-red-900 text-white text-sm flex items-center justify-center hover:bg-red-900"
+        >
+          +
+        </button>
+        <span className="text-red-400 font-bold text-sm ml-2">
+          ${(item.price * item.quantity).toFixed(2)}
+        </span>
+      </div>
+    </div>
+    <button
+      onClick={() => removeItem(item.id)}
+      className="text-gray-600 hover:text-red-500 transition-colors flex-shrink-0"
+    >
+      <TrashIcon className="h-5 w-5" />
+    </button>
+  </div>
+))}
             </div>
 
             <div className="border-t border-red-900 pt-6 mb-6">

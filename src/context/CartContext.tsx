@@ -6,12 +6,14 @@ interface CartItem {
   author: string
   price: number
   coverImage: string
+  quantity: number
 }
 
 interface CartContextType {
   items: CartItem[]
-  addItem: (item: CartItem) => void
+  addItem: (item: Omit<CartItem, 'quantity'>) => void
   removeItem: (id: string) => void
+  updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
   total: number
   count: number
@@ -31,17 +33,29 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(items))
   }, [items])
 
-  const addItem = (item: CartItem) => {
-    setItems(prev => prev.find(i => i.id === item.id) ? prev : [...prev, item])
+  const addItem = (item: Omit<CartItem, 'quantity'>) => {
+    setItems(prev => {
+      const existing = prev.find(i => i.id === item.id)
+      if (existing) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+      }
+      return [...prev, { ...item, quantity: 1 }]
+    })
   }
 
   const removeItem = (id: string) => setItems(prev => prev.filter(i => i.id !== id))
+
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity < 1) return
+    setItems(prev => prev.map(i => i.id === id ? { ...i, quantity } : i))
+  }
+
   const clearCart = () => setItems([])
-  const total = items.reduce((sum, i) => sum + i.price, 0)
-  const count = items.length
+  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+  const count = items.reduce((sum, i) => sum + i.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, clearCart, total, count }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, count }}>
       {children}
     </CartContext.Provider>
   )
