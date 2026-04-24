@@ -35,7 +35,7 @@ export const Hero = () => {
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
             Books for the misfits, the outcasts, and everyone who's ever felt
-            like they don't belong. We don't sell stories—we sell{' '}
+            like they don't belong. We don't sell stories. We sell{' '}
             <span className="line-through">salvation</span>{' '}
             <span className="text-red-400">revolution</span>.
           </p>
