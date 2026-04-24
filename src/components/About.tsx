@@ -18,7 +18,7 @@ export const About = () => {
             </h2>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Born in a basement venue and raised on three chords and the truth,
-              Gutterpunk Books & Co isn't just another bookstore—it's a middle
+              Gutterpunk Books & Co isn't just another bookstore. It's a middle
               finger to the mainstream literary scene. We're a sanctuary for the
               kids who wore band shirts to school and got sent home, for the
               ones who filled notebooks with poetry instead of math notes.
