@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { BookOpenIcon, MenuIcon, XIcon, ShoppingCartIcon, SearchIcon, Skull } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { Link } from 'react-router-dom'
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

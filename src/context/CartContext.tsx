@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface CartItem {
   id: string
@@ -20,21 +20,23 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | null>(null)
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const stored = localStorage.getItem('cart')
+      return stored ? JSON.parse(stored) : []
+    } catch { return [] }
+  })
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(items))
+  }, [items])
 
   const addItem = (item: CartItem) => {
-    setItems(prev => {
-      if (prev.find(i => i.id === item.id)) return prev
-      return [...prev, item]
-    })
+    setItems(prev => prev.find(i => i.id === item.id) ? prev : [...prev, item])
   }
 
-  const removeItem = (id: string) => {
-    setItems(prev => prev.filter(i => i.id !== id))
-  }
-
+  const removeItem = (id: string) => setItems(prev => prev.filter(i => i.id !== id))
   const clearCart = () => setItems([])
-
   const total = items.reduce((sum, i) => sum + i.price, 0)
   const count = items.length
 

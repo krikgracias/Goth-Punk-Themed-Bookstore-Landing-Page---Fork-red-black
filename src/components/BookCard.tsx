@@ -1,6 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ShoppingCartIcon, HeartIcon } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
 
 interface BookCardProps {
   id: string
@@ -20,6 +22,7 @@ export const BookCard = ({
   isNew
 }: BookCardProps) => {
   const navigate = useNavigate()
+  const { addItem } = useCart()
 
   return (
     <div
@@ -54,12 +57,21 @@ export const BookCard = ({
           >
             <HeartIcon className="h-4 w-4 text-red-500" />
           </button>
-          <button
-            onClick={e => e.stopPropagation()}
-            className="bg-red-700 hover:bg-red-600 p-2 rounded-sm transition-colors"
-          >
-            <ShoppingCartIcon className="h-4 w-4" />
-          </button>
+      <button
+  onClick={e => {
+    e.stopPropagation()
+    addItem({
+      id,
+      title,
+      author,
+      price: parseFloat(price.replace('$', '')),
+      coverImage
+    })
+  }}
+  className="bg-red-700 hover:bg-red-600 p-2 rounded-sm transition-colors"
+>
+  <ShoppingCartIcon className="h-4 w-4" />
+</button>
         </div>
       </div>
     </div>

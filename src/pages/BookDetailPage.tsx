@@ -5,6 +5,7 @@ import { NavBar } from '../components/NavBar'
 import { Footer } from '../components/Footer'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { Link } from 'react-router-dom'
 
 interface Book {
   id: string
