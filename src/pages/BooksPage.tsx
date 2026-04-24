@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { NavBar } from '../components/NavBar'
 import { Footer } from '../components/Footer'
 import { BookCard } from '../components/BookCard'
 import { SearchIcon } from 'lucide-react'
-
+ 
 interface Book {
   id: string
   title: string
@@ -15,11 +16,11 @@ interface Book {
   format: string
   genre: string | null
 }
-
+ 
 const GENRES = ['All', 'Thriller', 'Fiction', 'Punk History', 'Music History', 'Poetry', 'Horror', 'Sci-Fi', 'Mystery']
 const CONDITIONS = ['All', 'Like New', 'Very Good', 'Good', 'Acceptable']
 const FORMATS = ['All', 'Hardcover', 'Paperback', 'Ebook', 'Audiobook']
-
+ 
 export const BooksPage = () => {
   const [books, setBooks] = useState<Book[]>([])
   const [loading, setLoading] = useState(true)
@@ -27,7 +28,14 @@ export const BooksPage = () => {
   const [genre, setGenre] = useState('All')
   const [condition, setCondition] = useState('All')
   const [format, setFormat] = useState('All')
-
+  const location = useLocation()
+ 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const urlSearch = params.get('search')
+    if (urlSearch) setSearch(urlSearch)
+  }, [location.search])
+ 
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true)
@@ -36,25 +44,23 @@ export const BooksPage = () => {
         .select('id, title, author, price, cover_url, condition, format, genre')
         .eq('available', true)
         .order('title')
-
+ 
       if (genre !== 'All') query = query.eq('genre', genre)
       if (condition !== 'All') query = query.eq('condition', condition)
       if (format !== 'All') query = query.eq('format', format)
       if (search) query = query.or(`title.ilike.%${search}%,author.ilike.%${search}%`)
-
+ 
       const { data, error } = await query
       if (!error && data) setBooks(data)
       setLoading(false)
     }
     fetchBooks()
   }, [genre, condition, format, search])
-
+ 
   return (
     <div className="bg-black text-gray-200 min-h-screen w-full">
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 py-12">
-
-        {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-white uppercase tracking-widest mb-2"
             style={{ textShadow: '0 0 8px #ff0000' }}>
@@ -64,8 +70,7 @@ export const BooksPage = () => {
             {books.length} titles available
           </p>
         </div>
-
-        {/* Search */}
+ 
         <div className="relative mb-6">
           <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
           <input
@@ -76,8 +81,7 @@ export const BooksPage = () => {
             className="w-full py-3 pl-12 pr-4 bg-gray-900 border border-red-900 text-white focus:outline-none focus:border-red-500 rounded-none uppercase tracking-wide text-sm"
           />
         </div>
-
-        {/* Filters */}
+ 
         <div className="flex flex-wrap gap-4 mb-10">
           <div className="flex flex-col gap-1">
             <label className="text-gray-600 text-xs uppercase tracking-wider">Genre</label>
@@ -120,8 +124,7 @@ export const BooksPage = () => {
             </div>
           )}
         </div>
-
-        {/* Results */}
+ 
         {loading ? (
           <div className="text-gray-600 uppercase tracking-widest text-sm text-center py-24">
             Loading...
@@ -134,13 +137,13 @@ export const BooksPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {books.map(book => (
               <BookCard
-  key={book.id}
-  id={book.id}
-  title={book.title}
-  author={book.author}
-  price={`$${book.price.toFixed(2)}`}
-  coverImage={book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'}
-/>
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                author={book.author}
+                price={`$${book.price.toFixed(2)}`}
+                coverImage={book.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400'}
+              />
             ))}
           </div>
         )}

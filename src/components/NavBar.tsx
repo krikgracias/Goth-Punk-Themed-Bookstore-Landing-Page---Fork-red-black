@@ -2,11 +2,24 @@ import React, { useState } from 'react'
 import { BookOpenIcon, MenuIcon, XIcon, ShoppingCartIcon, SearchIcon, Skull } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { count } = useCart()
+  
+  const navigate = useNavigate()
+const [searchOpen, setSearchOpen] = useState(false)
+const [searchQuery, setSearchQuery] = useState('')
 
+const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'Enter' && searchQuery.trim()) {
+    navigate(`/books?search=${encodeURIComponent(searchQuery.trim())}`)
+    setSearchOpen(false)
+    setSearchQuery('')
+  }
+}
+  
   return (
     <nav className="bg-black border-b border-red-600 px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -25,9 +38,24 @@ export const NavBar = () => {
           <a href="#" className="hover:text-red-400 transition-colors font-medium uppercase tracking-wide text-sm border-b border-dashed border-red-800 pb-1">Manifesto</a>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="text-gray-300 hover:text-red-400">
-            <SearchIcon className="h-5 w-5" />
-          </button>
+        
+        {searchOpen ? (
+  <input
+    autoFocus
+    type="text"
+    value={searchQuery}
+    onChange={e => setSearchQuery(e.target.value)}
+    onKeyDown={handleSearch}
+    onBlur={() => setSearchOpen(false)}
+    placeholder="SEARCH..."
+    className="bg-gray-900 border border-red-900 text-white px-3 py-1 text-xs uppercase tracking-wide focus:outline-none focus:border-red-500 w-40"
+  />
+) : (
+  <button onClick={() => setSearchOpen(true)} className="text-gray-300 hover:text-red-400">
+    <SearchIcon className="h-5 w-5" />
+  </button>
+)}
+        
           <a href="/cart" className="text-gray-300 hover:text-red-400 relative">
             <ShoppingCartIcon className="h-5 w-5" />
             {count > 0 && (
