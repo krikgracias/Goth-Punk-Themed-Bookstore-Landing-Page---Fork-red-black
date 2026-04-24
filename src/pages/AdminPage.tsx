@@ -255,8 +255,11 @@ const fixAllCovers = async () => {
           >
             {status === 'loading' ? 'Adding...' : 'Add Book'}
           </button>
-          <button
-  onClick={fixAllCovers}
+<button
+  onClick={() => {
+    console.log('button clicked')
+    fixAllCovers()
+  }}
   className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 uppercase tracking-widest font-bold text-sm border border-gray-600 transition-colors"
 >
   Fix All Covers from Google Books
