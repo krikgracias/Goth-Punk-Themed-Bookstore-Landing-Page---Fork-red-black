@@ -38,7 +38,7 @@ export const BookCard = ({
         <img
           src={coverImage}
           alt={`Cover of ${title} by ${author}`}
-          className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-64 object-contain transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-0 group-hover:opacity-60 transition-opacity"></div>
         <div className="absolute top-0 left-0 w-8 h-8 bg-gray-300 opacity-30 transform rotate-45 translate-x-[-50%] translate-y-[-50%]"></div>

@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { NavBar } from '../components/NavBar'
-
+ 
 const ADMIN_PASSWORD = 'gutterpunk2025'
-
+ 
 const GENRES = ['Thriller', 'Fiction', 'Horror', 'Mystery', 'Sci-Fi', 'Fantasy',
   'Punk History', 'Music History', 'Poetry', 'Biography', 'History',
   'Self Help', 'Cooking', 'Children', 'Young Adult', 'Other']
-
+ 
 const empty = {
   title: '', author: '', isbn: '', price: '',
   condition: 'Good', genre: 'Thriller',
   format: 'Paperback', description: '',
   cover_url: '', featured: false
 }
-
+ 
 export const AdminPage = () => {
   const [authed, setAuthed] = useState(false)
   const [pw, setPw] = useState('')
@@ -22,26 +22,26 @@ export const AdminPage = () => {
   const [form, setForm] = useState({ ...empty })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
-  
-const fetchCover = async (isbn: string) => {
-  if (!isbn) return
-  try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
-    const data = await res.json()
-    const info = data.items?.[0]?.volumeInfo
-    if (!info) return
-    const cleanIsbn = isbn.replace(/-/g, '')
-    const cover = `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-L.jpg`
-    setForm(prev => ({
-      ...prev,
-      title: info.title || prev.title,
-      author: info.authors?.[0] || prev.author,
-      description: info.description?.slice(0, 500) || prev.description,
-      cover_url: cover
-    }))
-  } catch { }
-}
-
+ 
+  const fetchCover = async (isbn: string) => {
+    if (!isbn) return
+    try {
+      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
+      const data = await res.json()
+      const info = data.items?.[0]?.volumeInfo
+      if (!info) return
+      const cleanIsbn = isbn.replace(/-/g, '')
+      const cover = `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-L.jpg`
+      setForm(prev => ({
+        ...prev,
+        title: info.title || prev.title,
+        author: info.authors?.[0] || prev.author,
+        description: info.description?.slice(0, 500) || prev.description,
+        cover_url: cover
+      }))
+    } catch { }
+  }
+ 
   const handleLogin = () => {
     if (pw === ADMIN_PASSWORD) {
       setAuthed(true)
@@ -49,13 +49,13 @@ const fetchCover = async (isbn: string) => {
       setPwError(true)
     }
   }
-
+ 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const target = e.target
     const value = target.type === 'checkbox' ? (target as HTMLInputElement).checked : target.value
     setForm(prev => ({ ...prev, [target.name]: value }))
   }
-
+ 
   const handleSubmit = async () => {
     if (!form.title || !form.author || !form.price) {
       setMessage('Title, author, and price are required.')
@@ -85,46 +85,54 @@ const fetchCover = async (isbn: string) => {
       setForm({ ...empty })
     }
   }
-
-const fixAllCovers = async () => {
-  setMessage('Fixing covers...')
-  setStatus('loading')
-
-  const { data: books } = await supabase
-    .from('books')
-    .select('id, title, author')
-
-  if (!books) return
-
-  for (const book of books) {
-    try {
-      const res = await fetch(
-        `https://openlibrary.org/search.json?title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&limit=1`
-      )
-      const data = await res.json()
-      const doc = data.docs?.[0]
-      if (!doc) continue
-
-      const isbn = doc.isbn?.find((i: string) => i.length === 13) || doc.isbn?.[0]
-      if (!isbn) continue
-
-      const cover = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
-
-      await supabase
-        .from('books')
-        .update({ cover_url: cover, isbn })
-        .eq('id', book.id)
-
-    } catch { }
+ 
+  const fixAllCovers = async () => {
+    console.log('fixAllCovers called')
+    setMessage('Fixing covers...')
+    setStatus('loading')
+ 
+    const { data: books, error } = await supabase
+      .from('books')
+      .select('id, title, author')
+      
+       console.log('books:', books?.length, 'error:', error)
+ 
+    if (!books || error) {
+      setMessage('Failed to fetch books.')
+      setStatus('error')
+      return
+    }
+ 
+    for (const book of books) {
+      console.log('processing:', book.title)
+      try {
+        const res = await fetch(
+          `https://openlibrary.org/search.json?title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&limit=1`
+        )
+        const data = await res.json()
+        const doc = data.docs?.[0]
+        if (!doc) continue
+ 
+        const coverId = doc.cover_i
+        if (!coverId) continue
+ 
+        const cover = `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
+ 
+        await supabase
+          .from('books')
+          .update({ cover_url: cover })
+          .eq('id', book.id)
+ 
+      } catch (e) { console.log('error on', book.title, e) }
+    }
+ 
+    setMessage('All covers updated.')
+    setStatus('success')
   }
-
-  setMessage('All covers updated.')
-  setStatus('success')
-}
-
+ 
   const field = 'w-full bg-gray-900 border border-red-900 text-white py-2 px-3 text-sm focus:outline-none focus:border-red-500 rounded-none'
   const label = 'block text-gray-500 text-xs uppercase tracking-wider mb-1'
-
+ 
   if (!authed) {
     return (
       <div className="bg-black min-h-screen w-full">
@@ -155,7 +163,7 @@ const fixAllCovers = async () => {
       </div>
     )
   }
-
+ 
   return (
     <div className="bg-black min-h-screen w-full">
       <NavBar />
@@ -167,7 +175,7 @@ const fixAllCovers = async () => {
         <p className="text-gray-600 text-xs uppercase tracking-wide mb-10">
           All fields marked * are required
         </p>
-
+ 
         <div className="space-y-5">
           <div>
             <label className={label}>Title *</label>
@@ -210,14 +218,14 @@ const fixAllCovers = async () => {
           </div>
           <div>
             <label className={label}>ISBN</label>
-            <input 
-               name="isbn" 
-               value={form.isbn} 
-               onChange={handleChange} 
-               onBlur={e => fetchCover(e.target.value)}
-               className={field} 
-               placeholder="978-0-000-00000-0" 
-               />
+            <input
+              name="isbn"
+              value={form.isbn}
+              onChange={handleChange}
+              onBlur={e => fetchCover(e.target.value)}
+              className={field}
+              placeholder="978-0-000-00000-0"
+            />
           </div>
           <div>
             <label className={label}>Cover image URL</label>
@@ -240,14 +248,14 @@ const fixAllCovers = async () => {
               Feature on homepage
             </label>
           </div>
-
+ 
           {status === 'success' && (
             <p className="text-green-400 text-sm uppercase tracking-wide">{message}</p>
           )}
           {status === 'error' && (
             <p className="text-red-500 text-sm uppercase tracking-wide">{message}</p>
           )}
-
+ 
           <button
             onClick={handleSubmit}
             disabled={status === 'loading'}
@@ -255,15 +263,13 @@ const fixAllCovers = async () => {
           >
             {status === 'loading' ? 'Adding...' : 'Add Book'}
           </button>
-<button
-  onClick={() => {
-    console.log('button clicked')
-    fixAllCovers()
-  }}
-  className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 uppercase tracking-widest font-bold text-sm border border-gray-600 transition-colors"
->
-  Fix All Covers from Google Books
-</button>
+          <button
+            onClick={fixAllCovers}
+            disabled={status === 'loading'}
+            className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 uppercase tracking-widest font-bold text-sm border border-gray-600 transition-colors disabled:opacity-50"
+          >
+            Fix All Covers from Open Library
+          </button>
         </div>
       </main>
     </div>
