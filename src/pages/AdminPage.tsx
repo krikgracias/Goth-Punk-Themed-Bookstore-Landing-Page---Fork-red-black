@@ -98,22 +98,23 @@ const fixAllCovers = async () => {
 
   for (const book of books) {
     try {
-      const query = encodeURIComponent(`${book.title} ${book.author}`)
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`)
+      const res = await fetch(
+        `https://openlibrary.org/search.json?title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&limit=1`
+      )
       const data = await res.json()
-      const info = data.items?.[0]?.volumeInfo
-      if (!info) continue
+      const doc = data.docs?.[0]
+      if (!doc) continue
 
-      const isbn = info.industryIdentifiers?.find((i: any) => i.type === 'ISBN_13')?.identifier
-        || info.industryIdentifiers?.find((i: any) => i.type === 'ISBN_10')?.identifier
+      const isbn = doc.isbn?.find((i: string) => i.length === 13) || doc.isbn?.[0]
+      if (!isbn) continue
 
-      const cover = isbn
-        ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
-        : info.imageLinks?.thumbnail?.replace('http://', 'https://')
+      const cover = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
-      if (!cover) continue
+      await supabase
+        .from('books')
+        .update({ cover_url: cover, isbn })
+        .eq('id', book.id)
 
-      await supabase.from('books').update({ cover_url: cover, isbn: isbn || null }).eq('id', book.id)
     } catch { }
   }
 
