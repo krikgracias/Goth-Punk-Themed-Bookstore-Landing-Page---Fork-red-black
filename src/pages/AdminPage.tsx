@@ -22,6 +22,25 @@ export const AdminPage = () => {
   const [form, setForm] = useState({ ...empty })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  
+const fetchCover = async (isbn: string) => {
+  if (!isbn) return
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
+    const data = await res.json()
+    const info = data.items?.[0]?.volumeInfo
+    if (!info) return
+    const cleanIsbn = isbn.replace(/-/g, '')
+    const cover = `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-L.jpg`
+    setForm(prev => ({
+      ...prev,
+      title: info.title || prev.title,
+      author: info.authors?.[0] || prev.author,
+      description: info.description?.slice(0, 500) || prev.description,
+      cover_url: cover
+    }))
+  } catch { }
+}
 
   const handleLogin = () => {
     if (pw === ADMIN_PASSWORD) {
@@ -130,6 +149,7 @@ export const AdminPage = () => {
             <div>
               <label className={label}>Condition</label>
               <select name="condition" value={form.condition} onChange={handleChange} className={field}>
+                <option>New</option>
                 <option>Like New</option>
                 <option>Very Good</option>
                 <option>Good</option>
@@ -154,7 +174,14 @@ export const AdminPage = () => {
           </div>
           <div>
             <label className={label}>ISBN</label>
-            <input name="isbn" value={form.isbn} onChange={handleChange} className={field} placeholder="978-0-000-00000-0" />
+            <input 
+               name="isbn" 
+               value={form.isbn} 
+               onChange={handleChange} 
+               onBlur={e => fetchCover(e.target.value)}
+               className={field} 
+               placeholder="978-0-000-00000-0" 
+               />
           </div>
           <div>
             <label className={label}>Cover image URL</label>
